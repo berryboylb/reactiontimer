@@ -1,30 +1,37 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+//imports
+import { ref } from 'vue';
+import Block from './components/Block.vue';
+import Results from './components/Results.vue';
+
+//ref
+const isPlaying = ref<boolean>(false);
+const showResults = ref<boolean>(false);
+const delay = ref<null | number>(null);
+const score = ref<null | number>(null);
+
+//methods
+const start = () => {
+  //max delay is between 2s to 7s
+  delay.value = Math.round((2000 + Math.random() * 5000) / 1000) * 1000;
+  isPlaying.value = !isPlaying.value;
+  showResults.value = false
+}
+
+const end = (time: number) => {
+  score.value = time;
+  isPlaying.value = !isPlaying.value;
+  showResults.value = true
+}
 </script>
 
 <template>
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <h1>Reaction Vue App</h1>
+    <button :disabled="isPlaying" @click="start">Play</button>
+    <Results  v-if="showResults" :results="score ? score : 0"/>
   </div>
-  <HelloWorld msg="Vite + Vue" />
+  <Block :delay="delay" v-if="isPlaying" @end="end" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>
